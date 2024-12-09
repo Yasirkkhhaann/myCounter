@@ -1,4 +1,5 @@
 package com.example.composecourse
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +35,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -43,6 +46,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -82,26 +86,10 @@ fun DhikrListScreen() {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(it)
-                    .background(Color(0xFFF8F8F8))
+                    .background(Brush.linearGradient(listOf(Color.Cyan, Color.Blue)))
             ) {
-                // "Add new zikr" button
-                Button(
-                    onClick = { /* Handle add new zikr */ },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF720DFF))
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Default.Add, // Replace with the add icon resource
-                            contentDescription = "Add new zikr",
-                            tint = Color.White
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = "Add new zikr", color = Color.White)
-                    }
-                }
+
+                Spacer(modifier = Modifier.height(16.dp))
 
                 // Zikr Items
                 LazyColumn(
@@ -119,6 +107,10 @@ fun DhikrListScreen() {
                     }
                 }
             }
+        }, floatingActionButton = {
+            FloatingActionButton(onClick = { }) {
+                Icon(Icons.Filled.Add, contentDescription = "Add")
+            }
         }
     )
 }
@@ -131,84 +123,111 @@ fun ZikrCard(
     onContinue: () -> Unit,
     onEdit: () -> Unit
 ) {
+
     Card(
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        modifier = Modifier.fillMaxWidth()
+        elevation = CardDefaults.cardElevation(0.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Brush.linearGradient(listOf(Color(0xFF66C3F4), Color(0xFFF8B48F))))
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(20.dp),
         ) {
-            // Circular count indicator
-            Box(
-                modifier = Modifier
-                    .size(50.dp)
-                    .background(Color(0xFF720DFF), shape = RoundedCornerShape(50)),
-                contentAlignment = Alignment.Center
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Text(
-                    text = count.toString(),
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
+                Box(
 
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Zikr title
-            Text(
-                text = title,
-                color = Color.Black,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.weight(1f)
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Action buttons
-            Column(horizontalAlignment = Alignment.End) {
-                Button(
-                    onClick = onContinue,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF720DFF))
+                    modifier = Modifier
+                        .size(50.dp)
+                        .background(Brush.linearGradient(listOf(Color.Red, Color.Blue)), shape = CircleShape),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "Continue", color = Color.White)
+                    Text(
+                        text = count.toString(),
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.width(10.dp))
 
-                Row {
+                // Zikr title
+                Text(
+                    text = "Name: ($title)",
+                    color = Color.Black,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontSize = 18.sp
+                    // modifier = Modifier.weight(1f)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+
+                IconButton(onClick = onEdit) {
+                    Icon(
+                        Icons.Default.Edit, // Replace with edit icon resource
+                        contentDescription = "Edit",
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+
+            // Action buttons
+            Column(horizontalAlignment = Alignment.Start) {
+
+                Row() {
+                    Button(
+                        modifier = Modifier.weight(1f),
+                        onClick = onContinue,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF720DFF))
+                    ) {
+                        Text(text = "Continue", color = Color.White)
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
                     OutlinedButton(
                         onClick = onDelete,
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(text = "Delete")
                     }
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    IconButton(onClick = onEdit) {
-                        Icon(
-                            Icons.Default.Edit, // Replace with edit icon resource
-                            contentDescription = "Edit"
-                        )
-                    }
                 }
+
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+
             }
         }
     }
 }
+
 
 // Sample data model for zikr
 data class Zikr(val count: Int, val title: String)
 
 // Sample list of zikr
 val zikrList = listOf(
-    Zikr(1500, "Lillah"),
-    Zikr(6, "1234"),
+    Zikr(15, "Lillah"),
+    Zikr(60, "1234"),
+    Zikr(19, "554"),
+    Zikr(60, "1234"),
+    Zikr(19, "554"),
+    Zikr(60, "1234"),
+    Zikr(19, "554"),
+    Zikr(60, "1234"),
+    Zikr(19, "554"),
+    Zikr(60, "1234"),
+    Zikr(19, "554"),
+    Zikr(60, "1234"),
+    Zikr(19, "554"),
+    Zikr(60, "1234"),
     Zikr(19, "554")
 )
